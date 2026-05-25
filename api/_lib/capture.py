@@ -98,8 +98,13 @@ def capture(req: Request, endpoint: str) -> dict:
     if g.get("city"):
         log["city"] = g["city"]
 
+    # Skip writes for platform health-checks and other internal probes — they
+    # arrive with no X-Forwarded-For and resolve to 0.0.0.0 / private ranges,
+    # and they would otherwise dominate the dashboard with non-attack traffic.
+    skip_write = _is_private_ip(ip) or ip in ("", "0.0.0.0")
+
     db = get_db()
-    if db is not None:
+    if db is not None and not skip_write:
         try:
             ref = db.collection(ATTACKS_COLLECTION).add(log)
             log["id"] = ref[1].id

@@ -108,6 +108,20 @@ The dashboard reads via `/api/stats` and `/api/logs`, which run server-side. The
 
 This honeypot is intentionally vulnerable on the **decoy paths only** and is deployed in an environment isolated from any production system. No real user data is involved. Captured payloads are stored only in the project's Firestore instance and are not redistributed. See thesis Chapter 6, "Ethics and Legal Considerations".
 
+## Seeding mock data (for screenshots / demo)
+
+After the env var is configured, you can populate Firestore with realistic mock attacks:
+
+```bash
+pip install firebase-admin
+set FIREBASE_SERVICE_ACCOUNT_B64=<your_base64>     # Windows
+python scripts/seed.py                              # 120 events spread across 24h
+python scripts/seed.py --count 300                  # more
+python scripts/seed.py --wipe                       # clear existing first
+```
+
+The mock IPs use RFC 5737 documentation ranges so they don't point at any real organisation.
+
 ## License
 
 MIT
