@@ -1,6 +1,7 @@
-"""Recent attack logs for the dashboard live feed."""
+"""Recent attack logs for the dashboard live feed, with in-process caching."""
 import os
 import sys
+import time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
@@ -9,6 +10,9 @@ from flask import Flask, jsonify, request
 from _lib.firestore_client import ATTACKS_COLLECTION, get_db
 
 app = Flask(__name__)
+
+CACHE_TTL = 15.0
+_cache: dict = {"at": 0.0, "limit": 0, "data": None}
 
 
 @app.route("/", defaults={"path": ""}, methods=["GET"])
@@ -22,6 +26,12 @@ def handle(path):
         limit = max(1, min(int(request.args.get("limit", 50)), 200))
     except (TypeError, ValueError):
         limit = 50
+
+    now = time.time()
+    if (_cache["data"] is not None
+            and _cache["limit"] >= limit
+            and now - _cache["at"] < CACHE_TTL):
+        return jsonify({"logs": _cache["data"][:limit]}), 200
 
     try:
         q = (db.collection(ATTACKS_COLLECTION)
@@ -42,6 +52,12 @@ def handle(path):
                 "country_code": x.get("country_code"),
                 "user_agent": x.get("user_agent", "")
             })
+        _cache["at"] = now
+        _cache["limit"] = limit
+        _cache["data"] = out
         return jsonify({"logs": out}), 200
     except Exception as e:
-        return jsonify({"error": "firestore read failed", "detail": type(e).__name__}), 500
+        name = type(e).__name__
+        if _cache["data"] is not None:
+            return jsonify({"logs": _cache["data"][:limit], "warning": f"cached ({name})"}), 200
+        return jsonify({"logs": [], "warning": f"firestore read failed: {name}"}), 200

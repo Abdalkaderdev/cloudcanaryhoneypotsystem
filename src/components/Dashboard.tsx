@@ -23,7 +23,7 @@ type Stats = {
 };
 type LogRow = Parameters<typeof LiveLogs>[0]["logs"][number];
 
-const REFRESH_MS = 6000;
+const REFRESH_MS = 20000;
 
 export function Dashboard() {
   const [stats, setStats] = useState<Stats | null>(null);
@@ -34,13 +34,22 @@ export function Dashboard() {
     let cancelled = false;
     async function fetchAll() {
       try {
-        const [s, l] = await Promise.all([
-          fetch("/api/stats", { cache: "no-store" }).then(r => r.json()),
-          fetch("/api/logs?limit=50", { cache: "no-store" }).then(r => r.json()),
+        const [sRes, lRes] = await Promise.all([
+          fetch("/api/stats", { cache: "no-store" }),
+          fetch("/api/logs?limit=50", { cache: "no-store" }),
         ]);
         if (cancelled) return;
-        setStats(s);
-        setLogs(l.logs || []);
+        if (sRes.ok) {
+          const s = await sRes.json();
+          // guard against partial / malformed responses
+          if (s && typeof s.total_attacks === "number") {
+            setStats(s);
+          }
+        }
+        if (lRes.ok) {
+          const l = await lRes.json();
+          setLogs(Array.isArray(l.logs) ? l.logs : []);
+        }
         setErr(null);
       } catch (e: unknown) {
         if (!cancelled) setErr(e instanceof Error ? e.message : "fetch failed");
