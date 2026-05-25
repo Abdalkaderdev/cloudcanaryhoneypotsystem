@@ -5,54 +5,86 @@ export function AttackTimeline({ data }: { data: { hours_ago: number; count: num
   const ordered = [...data].sort((a, b) => b.hours_ago - a.hours_ago);
   const total = ordered.reduce((s, d) => s + d.count, 0);
   const max = Math.max(1, ...ordered.map((d) => d.count));
+  const peak = ordered.reduce((m, d) => (d.count > m.count ? d : m), ordered[0] || { count: 0, hours_ago: 0 });
 
-  // generate an SVG line path
-  const W = 600;
-  const H = 160;
-  const points = ordered.map((d, i) => {
-    const x = (i / (ordered.length - 1)) * W;
-    const y = H - (d.count / max) * (H - 16) - 8;
+  const W = 640;
+  const H = 180;
+  const padX = 4;
+  const padTop = 12;
+  const padBottom = 28;
+  const innerH = H - padTop - padBottom;
+  const pts = ordered.map((d, i) => {
+    const x = padX + (i / (ordered.length - 1)) * (W - padX * 2);
+    const y = padTop + (1 - d.count / max) * innerH;
     return [x, y] as const;
   });
-  const linePath = points.map((p, i) => `${i === 0 ? "M" : "L"} ${p[0].toFixed(1)} ${p[1].toFixed(1)}`).join(" ");
-  const areaPath = `${linePath} L ${W} ${H} L 0 ${H} Z`;
+
+  // smooth cardinal-spline-ish path
+  const linePath = pts.reduce((acc, [x, y], i) => {
+    if (i === 0) return `M ${x.toFixed(1)} ${y.toFixed(1)}`;
+    const [px, py] = pts[i - 1];
+    const cpx = (px + x) / 2;
+    return `${acc} C ${cpx.toFixed(1)} ${py.toFixed(1)}, ${cpx.toFixed(1)} ${y.toFixed(1)}, ${x.toFixed(1)} ${y.toFixed(1)}`;
+  }, "");
+  const areaPath = `${linePath} L ${pts[pts.length - 1][0].toFixed(1)} ${(H - padBottom).toFixed(1)} L ${pts[0][0].toFixed(1)} ${(H - padBottom).toFixed(1)} Z`;
 
   return (
     <Frame
-      kicker="Section 03"
-      title="Hour by hour"
-      byline={`${total} events plotted across the past 24 hours, UTC.`}
+      kicker="No. III"
+      title="A chronicle, hour by hour"
+      byline={`${total.toLocaleString()} interactions plotted across the past twenty-four hours, UTC.`}
     >
       <div className="relative">
-        <svg viewBox={`0 0 ${W} ${H + 24}`} preserveAspectRatio="none" className="w-full h-44">
-          {/* horizontal rule at zero */}
-          <line x1="0" y1={H} x2={W} y2={H} stroke="#C4B5A0" strokeWidth="1" />
-          {/* ticks every 4h */}
+        <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" className="w-full h-44">
+          <line x1={padX} y1={H - padBottom} x2={W - padX} y2={H - padBottom} stroke="#D5C9B1" strokeWidth="1" />
           {ordered.map((d, i) =>
             i % 4 === 0 ? (
-              <line key={i} x1={(i / (ordered.length - 1)) * W} y1={H} x2={(i / (ordered.length - 1)) * W} y2={H + 4} stroke="#A89A85" strokeWidth="1" />
+              <line
+                key={`tick-${i}`}
+                x1={padX + (i / (ordered.length - 1)) * (W - padX * 2)}
+                y1={H - padBottom}
+                x2={padX + (i / (ordered.length - 1)) * (W - padX * 2)}
+                y2={H - padBottom + 4}
+                stroke="#B9AC91"
+                strokeWidth="1"
+              />
             ) : null
           )}
-          <path d={areaPath} fill="#A8281E" fillOpacity="0.10" />
-          <path d={linePath} fill="none" stroke="#A8281E" strokeWidth="1.4" />
-          {points.map((p, i) =>
+          <path d={areaPath} fill="#7D1F1F" fillOpacity="0.07" />
+          <path d={linePath} fill="none" stroke="#7D1F1F" strokeWidth="1.3" />
+          {pts.map(([x, y], i) =>
             ordered[i].count > 0 ? (
-              <circle key={i} cx={p[0]} cy={p[1]} r={i === points.length - 1 ? 3.5 : 1.8} fill="#A8281E" />
+              <circle
+                key={`pt-${i}`}
+                cx={x}
+                cy={y}
+                r={i === pts.length - 1 ? 4 : 1.6}
+                fill={i === pts.length - 1 ? "#7D1F1F" : "#0E0C0A"}
+              />
             ) : null
           )}
-          {/* x labels */}
           {ordered.map((d, i) => {
             if (i % 4 !== 0 && i !== ordered.length - 1) return null;
-            const x = (i / (ordered.length - 1)) * W;
+            const x = padX + (i / (ordered.length - 1)) * (W - padX * 2);
             const label = d.hours_ago === 0 ? "now" : `−${d.hours_ago}h`;
             return (
-              <text key={`l${i}`} x={x} y={H + 18} textAnchor="middle" fontFamily="DM Mono" fontSize="10" fill="#7A6A5A">{label}</text>
+              <text
+                key={`label-${i}`}
+                x={x}
+                y={H - 8}
+                textAnchor="middle"
+                fontFamily="DM Mono"
+                fontSize="10"
+                fill="#857A6B"
+              >
+                {label}
+              </text>
             );
           })}
         </svg>
       </div>
-      <p className="byline mt-3 italic">
-        Peak hour: {ordered.reduce((m, d) => d.count > m.count ? d : m, ordered[0] || { count: 0, hours_ago: 0 }).hours_ago === 0 ? "now" : `−${ordered.reduce((m, d) => d.count > m.count ? d : m, ordered[0] || { count: 0, hours_ago: 0 }).hours_ago}h`} ({max} events).
+      <p className="byline mt-4 italic">
+        Peak activity recorded {peak.hours_ago === 0 ? "in the current hour" : `${peak.hours_ago} hour${peak.hours_ago === 1 ? "" : "s"} ago`}, with {peak.count.toLocaleString()} interactions.
       </p>
     </Frame>
   );

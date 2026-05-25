@@ -5,27 +5,27 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        paper:   "#F4ECDD",
-        paper2:  "#EBE2D1",
-        paper3:  "#E1D6BF",
-        ink:     "#1B1612",
-        ink2:    "#3D332A",
-        ink3:    "#7A6A5A",
-        rule:    "#C4B5A0",
-        ruleHi:  "#A89A85",
-        red:     "#A8281E",
-        teal:    "#1F3B40",
-        ochre:   "#A0823D",
-        moss:    "#4F6B3E"
+        paper:   "#F8F4ED",
+        paper2:  "#F1ECE2",
+        paper3:  "#E6DECF",
+        ink:     "#0E0C0A",
+        ink2:    "#3A332A",
+        ink3:    "#857A6B",
+        rule:    "#D5C9B1",
+        ruleHi:  "#B9AC91",
+        burgundy:"#7D1F1F",
+        slate:   "#2A3640",
+        gold:    "#9B7E3C"
       },
       fontFamily: {
-        display: ['"Fraunces"', "Georgia", "serif"],
-        body:    ['"Fraunces"', "Georgia", "serif"],
+        display: ['"Bodoni Moda"', "Didot", "Georgia", "serif"],
+        body:    ['"Crimson Pro"', "Georgia", "serif"],
         mono:    ['"DM Mono"', "ui-monospace", "Menlo", "Consolas", "monospace"]
       },
       letterSpacing: {
         small: "0.16em",
-        smallcaps: "0.22em"
+        smallcaps: "0.24em",
+        masthead: "0.06em"
       }
     }
   },

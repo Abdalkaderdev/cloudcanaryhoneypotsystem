@@ -12,15 +12,17 @@ export function Frame({
   return (
     <section className={cn("relative", className)}>
       {(kicker || title) && (
-        <header className="mb-4">
-          {kicker && <div className="smallcaps mb-1">{kicker}</div>}
+        <header className="mb-6">
+          {kicker && <div className="smallcaps mb-2">{kicker}</div>}
           {title && (
-            <h2 className="font-display text-[28px] sm:text-[32px] font-700 text-ink leading-[1.05]" style={{ fontWeight: 700 }}>
+            <h2
+              className="font-display text-ink leading-[1.02]"
+              style={{ fontSize: "clamp(28px, 3vw, 36px)", fontWeight: 700, letterSpacing: "-0.005em" }}
+            >
               {title}
             </h2>
           )}
-          {byline && <p className="byline mt-1">{byline}</p>}
-          <div className="hr-soft mt-3" />
+          {byline && <p className="byline mt-2">{byline}</p>}
         </header>
       )}
       {children}
@@ -28,7 +30,15 @@ export function Frame({
   );
 }
 
-export function Rule({ kind = "soft" }: { kind?: "soft" | "strong" | "thick" }) {
-  const c = kind === "thick" ? "hr-thick" : kind === "strong" ? "hr-strong" : "hr-soft";
+export function Ornament() {
+  return (
+    <div className="ornament my-12" aria-hidden>
+      <span className="ornament-mark" />
+    </div>
+  );
+}
+
+export function Rule({ kind = "soft" }: { kind?: "soft" | "strong" | "double" }) {
+  const c = kind === "double" ? "hr-double" : kind === "strong" ? "hr-strong" : "hr-soft";
   return <div className={c} />;
 }

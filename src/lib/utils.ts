@@ -42,15 +42,15 @@ export function attackTypeLabel(t: string): string {
 }
 
 export function attackTypeColor(t: string): string {
-  // Editorial palette — restrained, ink-friendly on cream paper.
+  // Editorial palette — restrained ink tones on ivory paper.
   return ({
-    recon:             "#1F3B40",  // teal
-    brute_force:       "#A0823D",  // ochre
-    sql_injection:     "#A8281E",  // ink red
-    xss:               "#6B3F8A",  // muted purple
-    command_injection: "#7A1F18",  // deep red
-    path_traversal:    "#B5651D",  // burnt sienna
-    malformed_payload: "#806A2C",  // dark gold
-    unknown:           "#7A6A5A"   // ink3
-  } as Record<string, string>)[t] || "#7A6A5A";
+    recon:             "#2A3640",  // slate
+    brute_force:       "#9B7E3C",  // gold
+    sql_injection:     "#7D1F1F",  // burgundy
+    xss:               "#5C2E6E",  // mulberry
+    command_injection: "#4A0F0F",  // ox-blood
+    path_traversal:    "#8A4A1F",  // sienna
+    malformed_payload: "#705320",  // dark amber
+    unknown:           "#857A6B"   // ink3
+  } as Record<string, string>)[t] || "#857A6B";
 }

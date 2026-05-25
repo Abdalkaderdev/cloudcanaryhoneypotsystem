@@ -2,80 +2,108 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,700&family=DM+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,700;0,6..96,900;1,6..96,400;1,6..96,700;1,6..96,900&family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=DM+Mono:wght@400;500&display=swap');
 
 :root { color-scheme: light; }
 
 html, body {
-  background: #F4ECDD;
-  color: #1B1612;
-  font-family: "Fraunces", Georgia, serif;
+  background: #F8F4ED;
+  color: #0E0C0A;
+  font-family: "Crimson Pro", Georgia, serif;
+  font-feature-settings: "onum" 1, "kern" 1, "liga" 1;
   font-variant-numeric: oldstyle-nums proportional-nums;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Subtle paper-grain noise — drawn from inline SVG so no extra request */
+/* No paper grain. The silence does the work. */
 body {
   background-image:
-    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.92' numOctaves='2' seed='5'/><feColorMatrix values='0 0 0 0 0.105   0 0 0 0 0.085   0 0 0 0 0.07   0 0 0 0.035 0'/></filter><rect width='240' height='240' filter='url(%23n)'/></svg>"),
-    radial-gradient(80% 50% at 50% 0%, rgba(160,130,61,0.05), transparent 65%);
+    radial-gradient(120% 80% at 50% -20%, rgba(125, 31, 31, 0.04), transparent 60%),
+    radial-gradient(80% 60% at 50% 120%, rgba(155, 126, 60, 0.05), transparent 60%);
   background-attachment: fixed;
 }
 
-::selection { background: #1B1612; color: #F4ECDD; }
+::selection { background: #0E0C0A; color: #F8F4ED; }
 
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #C4B5A0; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #A89A85; }
+::-webkit-scrollbar-thumb { background: #D5C9B1; border-radius: 0; }
+::-webkit-scrollbar-thumb:hover { background: #B9AC91; }
 
-/* Editorial drop-cap utility */
-.dropcap::first-letter {
-  font-family: "Fraunces", Georgia, serif;
-  font-weight: 900;
-  font-size: 3.6em;
-  line-height: 0.85;
-  float: left;
-  padding: 0.1em 0.12em 0 0;
-  color: #A8281E;
-  font-style: italic;
+/* Lining tabular for actual data tables */
+.lining-nums { font-variant-numeric: lining-nums tabular-nums; }
+.oldstyle-nums { font-variant-numeric: oldstyle-nums proportional-nums; }
+
+/* Hairline rules — sharper, with optional decorative gap */
+.hr-soft   { border-top: 1px solid #D5C9B1; }
+.hr-strong { border-top: 1px solid #0E0C0A; }
+.hr-double { border-top: 1px solid #0E0C0A; border-bottom: 1px solid #0E0C0A; height: 4px; }
+
+/* Decorative ornament between sections — a single thin rule with a diamond mark */
+.ornament {
+  position: relative;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ornament::before, .ornament::after {
+  content: "";
+  height: 1px;
+  background: #D5C9B1;
+  flex: 1;
+}
+.ornament-mark {
+  width: 6px; height: 6px;
+  background: #0E0C0A;
+  transform: rotate(45deg);
+  margin: 0 18px;
 }
 
-/* Hairline rules */
-.hr-soft { border-top: 1px solid #C4B5A0; }
-.hr-strong { border-top: 1px solid #1B1612; }
-.hr-thick { border-top: 3px solid #1B1612; }
+/* Small caps label */
+.smallcaps {
+  font-family: "Bodoni Moda", Didot, Georgia, serif;
+  font-weight: 500;
+  font-feature-settings: "smcp" 1, "c2sc" 1;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  font-size: 10.5px;
+  color: #3A332A;
+}
 
-/* Tabular old-style is awful for data — switch to lining + tabular for numbers */
-.lining-nums { font-variant-numeric: lining-nums tabular-nums; }
+/* Italic byline / caption */
+.byline {
+  font-family: "Crimson Pro", Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  color: #857A6B;
+  font-size: 14px;
+  letter-spacing: 0.005em;
+}
 
-/* Subtle pulse for the live dot */
+/* Editorial drop cap — a single piece of restraint, used once */
+.dropcap::first-letter {
+  font-family: "Bodoni Moda", Didot, Georgia, serif;
+  font-weight: 900;
+  font-style: italic;
+  font-size: 5.4em;
+  line-height: 0.78;
+  float: left;
+  padding: 0.08em 0.12em 0 0;
+  color: #7D1F1F;
+}
+
+/* Soft pulse for the live dot */
 @keyframes pulseLive {
   0%, 100% { opacity: 1; transform: scale(1); }
-  50%      { opacity: 0.55; transform: scale(1.1); }
+  50%      { opacity: 0.5; transform: scale(1.15); }
 }
-.pulse-live { animation: pulseLive 1.6s ease-in-out infinite; }
+.pulse-live { animation: pulseLive 1.8s ease-in-out infinite; }
 
-/* Sweep-in for new rows in the live feed */
+/* Sweep highlight for new wire rows */
 @keyframes sweep {
-  from { background: rgba(168, 40, 30, 0.10); }
+  from { background: rgba(125, 31, 31, 0.10); }
   to   { background: transparent; }
 }
 .sweep { animation: sweep 1.8s ease-out 1; }
-
-/* Section label small caps */
-.smallcaps {
-  font-family: "Fraunces", Georgia, serif;
-  font-weight: 700;
-  font-feature-settings: "smcp" 1, "c2sc" 1;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  font-size: 11px;
-  color: #1F3B40;
-}
-
-/* Italic byline */
-.byline {
-  font-style: italic;
-  color: #7A6A5A;
-  font-size: 12px;
-}
