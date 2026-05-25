@@ -1,0 +1,23 @@
+rules_version = '2';
+
+// Cloud Canary Honeypot — Firestore security rules.
+//
+// The honeypot writes attack logs via the Firebase Admin SDK (server-side,
+// running inside Vercel Python serverless functions). The Admin SDK bypasses
+// these rules entirely, so server-side writes work.
+//
+// All CLIENT access (web/mobile Firebase SDK, REST API with no service
+// account) is denied. This prevents anyone from reading or tampering with
+// attack logs directly from the browser, even though the project's web API
+// key is necessarily public.
+//
+// The dashboard reads stats and recent logs through the /api/stats and
+// /api/logs endpoints, which run server-side and use the Admin SDK.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

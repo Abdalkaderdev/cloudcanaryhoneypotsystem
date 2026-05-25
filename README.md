@@ -91,7 +91,18 @@ Single collection: `attack_logs`. Each document:
 }
 ```
 
-Recommended Firestore rules: deny all client access — only the server-side admin SDK should write. The dashboard reads via the `/api/stats` and `/api/logs` server-side endpoints, never directly from the client.
+**Firestore rules** (deny-all client access) are shipped in `firestore.rules` and configured via `firebase.json`. The server-side Admin SDK used by the Python functions bypasses these rules. To deploy them:
+
+```bash
+# Once, install the Firebase CLI
+npm install -g firebase-tools
+firebase login
+
+# Deploy rules only (does not touch your data or other Firebase resources)
+firebase deploy --only firestore:rules --project YOUR_PROJECT_ID
+```
+
+The dashboard reads via `/api/stats` and `/api/logs`, which run server-side. The browser never talks to Firestore directly.
 
 ## Ethics & legal
 
