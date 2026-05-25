@@ -17,7 +17,7 @@ export function StatusCards({
     <div className="grid grid-cols-2 gap-px bg-border md:grid-cols-4 border border-border">
       {tiles.map((t) => (
         <div key={t.code} className="bg-panel p-5 relative">
-          <div className="flex items-center justify-between text-[10px] tracking-widest2 text-inkLow">
+          <div className="flex items-center justify-between text-[10px] tracking-widest2 text-inkMid">
             <span>{t.code}</span>
             <span>{t.sub.toUpperCase()}</span>
           </div>

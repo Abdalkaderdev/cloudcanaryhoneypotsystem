@@ -32,14 +32,14 @@ export function LiveLogs({ logs }: { logs: Log[] }) {
   return (
     <Frame index="004" title="LIVE EVENT FEED" meta={`tail -f · ${logs.length} rows · refresh 6s`}>
       {logs.length === 0 ? (
-        <div className="text-[11px] tracking-widest2 text-inkLow">
+        <div className="text-[11px] tracking-widest2 text-inkMid">
           <span className="blink">█</span> AWAITING INCOMING TRAFFIC
         </div>
       ) : (
         <div className="overflow-x-auto -mx-1">
           <table className="w-full text-left font-mono">
             <thead>
-              <tr className="text-[9px] tracking-widest2 text-inkLow border-b border-border">
+              <tr className="text-[9px] tracking-widest2 text-inkMid border-b border-border">
                 <th className="py-2 pl-1 pr-3 font-normal w-12">REC</th>
                 <th className="py-2 pr-3 font-normal w-20">T</th>
                 <th className="py-2 pr-3 font-normal">IP</th>
@@ -55,13 +55,13 @@ export function LiveLogs({ logs }: { logs: Log[] }) {
                   key={l.id}
                   className={`border-b border-border/40 last:border-0 hover:bg-panel2 ${newest.current.has(l.id) ? "sweep" : ""}`}
                 >
-                  <td className="py-2 pl-1 pr-3 text-[10px] text-inkLow tabular-nums">
+                  <td className="py-2 pl-1 pr-3 text-[10px] text-inkMid tabular-nums">
                     {String(logs.length - i).padStart(4, "0")}
                   </td>
                   <td className="py-2 pr-3 text-[11px] text-inkMid whitespace-nowrap">{timeAgo(l.timestamp)}</td>
                   <td className="py-2 pr-3 text-[11px]">
                     <span className="text-ink">{l.ip}</span>
-                    {l.country_code && <span className="ml-2 text-inkLow">[{l.country_code}]</span>}
+                    {l.country_code && <span className="ml-2 text-inkMid">[{l.country_code}]</span>}
                   </td>
                   <td className="py-2 pr-3 text-[11px] text-amber">{l.method}</td>
                   <td className="py-2 pr-3 text-[11px] text-amberDim truncate max-w-[220px]">{l.endpoint}</td>

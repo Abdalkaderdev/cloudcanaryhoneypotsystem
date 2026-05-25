@@ -24,13 +24,13 @@ export function Header({ status }: { status: "active" | "degraded" | "down" }) {
           <div className="font-display text-2xl font-black tracking-widest2 text-amber leading-none">
             CLOUD&nbsp;CANARY
           </div>
-          <div className="text-[10px] tracking-widest2 text-inkLow uppercase hidden sm:block">
+          <div className="text-[10px] tracking-widest2 text-inkMid uppercase hidden sm:block">
             OBSERVATION TERMINAL · v1.0
           </div>
         </div>
         <div className="flex items-center gap-4">
           <div className="hidden md:flex items-center gap-2 text-[10px] tracking-widest2 text-inkMid">
-            <span className="text-inkLow">SESSION</span>
+            <span className="text-inkMid">SESSION</span>
             <span className="text-ink font-mono">{now || "—"}</span>
           </div>
           <div className="flex items-center gap-2 border border-border px-3 py-1.5">
@@ -41,7 +41,7 @@ export function Header({ status }: { status: "active" | "degraded" | "down" }) {
         </div>
       </div>
       <div className="mx-auto max-w-7xl px-6 pb-2">
-        <div className="text-[10px] tracking-widest2 text-inkLow">
+        <div className="text-[10px] tracking-widest2 text-inkMid">
           // PASSIVE OBSERVATION OF DECOY ENDPOINTS · ALL TRAFFIC IS UNTRUSTED · DO NOT INTERACT
         </div>
       </div>

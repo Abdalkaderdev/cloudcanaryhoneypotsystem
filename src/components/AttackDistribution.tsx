@@ -10,7 +10,7 @@ export function AttackDistribution({ distribution }: { distribution: Record<stri
   return (
     <Frame index="002" title="ATTACK DISTRIBUTION" meta={`Σ ${total} events / 24h`}>
       {entries.length === 0 ? (
-        <p className="text-xs tracking-widest2 text-inkLow">// NO SIGNAL</p>
+        <p className="text-xs tracking-widest2 text-inkMid">// NO SIGNAL</p>
       ) : (
         <ul className="space-y-2.5">
           {entries.map(([key, value]) => {

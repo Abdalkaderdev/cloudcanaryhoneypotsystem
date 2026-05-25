@@ -58,7 +58,7 @@ export function Dashboard() {
       <div className="min-h-dvh">
         <Header status="degraded" />
         <main className="mx-auto max-w-7xl px-6 py-10">
-          <p className="text-[12px] tracking-widest2 text-inkLow">
+          <p className="text-[12px] tracking-widest2 text-inkMid">
             <span className="blink">█</span> ESTABLISHING UPLINK…
           </p>
         </main>
@@ -104,7 +104,7 @@ export function Dashboard() {
         </div>
 
         <Rule />
-        <footer className="flex flex-col sm:flex-row items-center justify-between gap-2 text-[10px] tracking-widest2 text-inkLow uppercase">
+        <footer className="flex flex-col sm:flex-row items-center justify-between gap-2 text-[10px] tracking-widest2 text-inkMid uppercase">
           <span>// END OF FEED</span>
           <span>CLOUD CANARY HONEYPOT · v1.0 · {logs.length} records loaded</span>
           <span>// 30°C 44.0091°N 43.4877°E</span>

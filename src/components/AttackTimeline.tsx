@@ -24,7 +24,7 @@ export function AttackTimeline({ data }: { data: { hours_ago: number; count: num
                 {live && <div className="absolute -top-0.5 left-0 right-0 h-px bg-threat blink" />}
               </div>
               {idx % 4 === 0 && (
-                <div className="mt-1.5 text-[9px] tracking-widest2 text-inkLow tabular-nums">
+                <div className="mt-1.5 text-[9px] tracking-widest2 text-inkMid tabular-nums">
                   {label}
                 </div>
               )}
@@ -32,7 +32,7 @@ export function AttackTimeline({ data }: { data: { hours_ago: number; count: num
           );
         })}
       </div>
-      <div className="mt-3 flex items-center justify-between text-[10px] tracking-widest2 text-inkLow">
+      <div className="mt-3 flex items-center justify-between text-[10px] tracking-widest2 text-inkMid">
         <span>← -24H</span>
         <span>NOW →</span>
       </div>
