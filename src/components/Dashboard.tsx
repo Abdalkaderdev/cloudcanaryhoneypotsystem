@@ -15,6 +15,8 @@ type Stats = {
   monitored_endpoints: number;
   unique_ips: number;
   last_hour_attacks: number;
+  blocked_ips: number;
+  avg_responses: number;
   distribution: Record<string, number>;
   timeline_24h: { hours_ago: number; count: number }[];
   top_attackers: { ip: string; count: number; country?: string; last: number }[];
@@ -82,9 +84,9 @@ export function Dashboard() {
         {/* The four key tiles */}
         <StatusCards
           totalAttacks={stats.total_attacks}
+          blockedIps={stats.blocked_ips ?? 0}
           monitoredEndpoints={stats.monitored_endpoints}
-          uniqueIps={stats.unique_ips}
-          lastHourAttacks={stats.last_hour_attacks}
+          avgResponses={stats.avg_responses ?? 0}
         />
 
         {/* Distribution + Timeline */}

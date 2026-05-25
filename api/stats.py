@@ -37,6 +37,8 @@ def _empty(warning: str | None = None, status: str = "active", db_ok: bool = Tru
         "monitored_endpoints": len(MONITORED_ENDPOINTS),
         "unique_ips": 0,
         "last_hour_attacks": 0,
+        "blocked_ips": 0,
+        "avg_responses": 0,
         "distribution": {},
         "timeline_24h": [{"hours_ago": 23 - i, "count": 0} for i in range(24)],
         "top_attackers": [],
@@ -109,6 +111,7 @@ def handle(path):
         {"ip": ip, "count": c, "country": countries.get(ip), "last": last_seen.get(ip, 0)}
         for ip, c in ips.most_common(10)
     ]
+    avg_responses = round(total / len(ips), 1) if len(ips) > 0 else 0
 
     data = {
         "system_status": "active",
@@ -116,6 +119,8 @@ def handle(path):
         "monitored_endpoints": len(MONITORED_ENDPOINTS),
         "unique_ips": len(ips),
         "last_hour_attacks": last_hour,
+        "blocked_ips": 0,            # passive observation: nothing is ever blocked
+        "avg_responses": avg_responses,  # mean requests per unique source
         "distribution": dict(types),
         "timeline_24h": timeline,
         "top_attackers": top,
