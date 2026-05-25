@@ -29,7 +29,6 @@ export function Dashboard() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [logs, setLogs] = useState<LogRow[]>([]);
   const [err, setErr] = useState<string | null>(null);
-  const [tick, setTick] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -43,7 +42,6 @@ export function Dashboard() {
         setStats(s);
         setLogs(l.logs || []);
         setErr(null);
-        setTick(t => t + 1);
       } catch (e: unknown) {
         if (!cancelled) setErr(e instanceof Error ? e.message : "fetch failed");
       }
@@ -57,10 +55,8 @@ export function Dashboard() {
     return (
       <div className="min-h-dvh">
         <Header status="degraded" />
-        <main className="mx-auto max-w-7xl px-6 py-10">
-          <p className="text-[12px] tracking-widest2 text-inkMid">
-            <span className="blink">█</span> ESTABLISHING UPLINK…
-          </p>
+        <main className="mx-auto max-w-6xl px-6 py-10">
+          <p className="font-display italic text-ink3 text-lg">Establishing connection to the wire…</p>
         </main>
       </div>
     );
@@ -69,58 +65,95 @@ export function Dashboard() {
   return (
     <div className="min-h-dvh">
       <Header status={stats.system_status} />
-      <main className="mx-auto max-w-7xl space-y-5 px-6 py-6">
+
+      <main className="mx-auto max-w-6xl px-6 py-8 sm:py-10 space-y-10">
         {stats.warning && (
-          <div className="hardframe border-warn/60 bg-warn/5 px-4 py-3 text-[11px] tracking-widest2 text-warn">
-            ⚠ {stats.warning}
-          </div>
+          <Notice tone="warn">{stats.warning}</Notice>
         )}
         {err && (
-          <div className="hardframe border-threat/60 bg-threat/5 px-4 py-3 text-[11px] tracking-widest2 text-threat">
-            ⚠ {err}
-          </div>
+          <Notice tone="error">Connection issue: {err}</Notice>
         )}
 
-        <section>
-          <SectionLabel index="001" title="TELEMETRY OVERVIEW" meta={`tick #${String(tick).padStart(4, "0")} · refresh ${REFRESH_MS / 1000}s`} />
-          <StatusCards
-            totalAttacks={stats.total_attacks}
-            monitoredEndpoints={stats.monitored_endpoints}
-            uniqueIps={stats.unique_ips}
-            lastHourAttacks={stats.last_hour_attacks}
-          />
+        {/* Lead spread */}
+        <section className="grid grid-cols-1 lg:grid-cols-12 gap-x-10 gap-y-8">
+          <div className="lg:col-span-7">
+            <div className="smallcaps mb-2">Section 01 · Lead</div>
+            <h2 className="font-display text-ink leading-[0.95]" style={{ fontSize: "clamp(40px, 6vw, 64px)", fontWeight: 900, letterSpacing: "-0.015em" }}>
+              <span className="italic font-700">{stats.total_attacks.toLocaleString()}</span> events,{" "}
+              {stats.unique_ips.toLocaleString()} sources, in the past 24 hours.
+            </h2>
+            <p className="dropcap font-display text-ink2 mt-5 leading-snug" style={{ fontSize: "16px" }}>
+              The Cloud Canary honeypot continues to attract opportunistic traffic.
+              In the most recent hour, <strong className="text-ink">{stats.last_hour_attacks.toLocaleString()}</strong> interactions
+              were captured across <strong className="text-ink">{stats.monitored_endpoints}</strong> decoy endpoints.
+              Distribution and provenance are reported below, with all timestamps in coordinated universal time.
+            </p>
+          </div>
+
+          <aside className="lg:col-span-5 lg:border-l border-rule lg:pl-10">
+            <div className="smallcaps mb-3">At a glance</div>
+            <dl className="space-y-3">
+              <Stat label="Total events / 24h" value={stats.total_attacks.toLocaleString()} />
+              <Stat label="Unique threat sources" value={stats.unique_ips.toLocaleString()} />
+              <Stat label="Events / last hour" value={stats.last_hour_attacks.toLocaleString()} />
+              <Stat label="Monitored decoys" value={stats.monitored_endpoints.toLocaleString()} />
+            </dl>
+          </aside>
         </section>
 
-        <div className="grid grid-cols-1 gap-5 lg:grid-cols-5">
-          <div className="lg:col-span-2"><AttackDistribution distribution={stats.distribution} /></div>
-          <div className="lg:col-span-3"><AttackTimeline data={stats.timeline_24h} /></div>
+        <Rule kind="strong" />
+
+        <StatusCards
+          totalAttacks={stats.total_attacks}
+          monitoredEndpoints={stats.monitored_endpoints}
+          uniqueIps={stats.unique_ips}
+          lastHourAttacks={stats.last_hour_attacks}
+        />
+
+        <Rule />
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-10 gap-y-10">
+          <div className="lg:col-span-5"><AttackDistribution distribution={stats.distribution} /></div>
+          <div className="lg:col-span-7"><AttackTimeline data={stats.timeline_24h} /></div>
         </div>
+
+        <Rule />
 
         <LiveLogs logs={logs} />
 
-        <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+        <Rule />
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-10 gap-y-10">
           <Infrastructure items={stats.infrastructure} />
           <TopAttackers items={stats.top_attackers} />
         </div>
 
-        <Rule />
-        <footer className="flex flex-col sm:flex-row items-center justify-between gap-2 text-[10px] tracking-widest2 text-inkMid uppercase">
-          <span>// END OF FEED</span>
-          <span>CLOUD CANARY HONEYPOT · v1.0 · {logs.length} records loaded</span>
-          <span>// 30°C 44.0091°N 43.4877°E</span>
+        <Rule kind="thick" />
+
+        <footer className="grid grid-cols-3 gap-4 py-6 text-[11px] text-ink3 smallcaps">
+          <span>— end of edition —</span>
+          <span className="text-center">Cloud Canary · v1.0</span>
+          <span className="text-right italic font-normal">refreshed every {REFRESH_MS / 1000}s</span>
         </footer>
       </main>
     </div>
   );
 }
 
-function SectionLabel({ index, title, meta }: { index: string; title: string; meta?: string }) {
+function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="mb-3 flex items-baseline justify-between gap-4">
-      <h2 className="section-bar text-[12px]">
-        <span className="index">[{index}]</span>&nbsp;{title}
-      </h2>
-      {meta && <span className="meta text-[10px] hidden sm:inline">{meta}</span>}
+    <div className="flex items-baseline justify-between gap-3 border-b border-rule/50 pb-2">
+      <dt className="font-display text-[14px] text-ink2" style={{ fontWeight: 500 }}>{label}</dt>
+      <dd className="font-display text-ink lining-nums text-[22px]" style={{ fontWeight: 900, letterSpacing: "-0.01em" }}>{value}</dd>
+    </div>
+  );
+}
+
+function Notice({ children, tone }: { children: React.ReactNode; tone: "warn" | "error" }) {
+  const color = tone === "error" ? "text-red border-red" : "text-ochre border-ochre";
+  return (
+    <div className={`border-l-2 ${color} pl-4 py-2 italic font-display text-[15px]`}>
+      {children}
     </div>
   );
 }

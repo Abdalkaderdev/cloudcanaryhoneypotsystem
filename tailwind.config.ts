@@ -5,27 +5,27 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        bg:        "#0A0908",
-        panel:     "#13110E",
-        panel2:    "#1A1713",
-        border:    "#3D352B",
-        borderHi:  "#5A4E3B",
-        amber:     "#FFC04D",
-        amberDim:  "#D99A2B",
-        ink:       "#FBF1E0",
-        inkMid:    "#D4C19A",
-        inkLow:    "#A99070",
-        threat:    "#FF6E5E",
-        ok:        "#B6D17F",
-        warn:      "#FFC04D"
+        paper:   "#F4ECDD",
+        paper2:  "#EBE2D1",
+        paper3:  "#E1D6BF",
+        ink:     "#1B1612",
+        ink2:    "#3D332A",
+        ink3:    "#7A6A5A",
+        rule:    "#C4B5A0",
+        ruleHi:  "#A89A85",
+        red:     "#A8281E",
+        teal:    "#1F3B40",
+        ochre:   "#A0823D",
+        moss:    "#4F6B3E"
       },
       fontFamily: {
-        display: ['"Big Shoulders Display"', "Impact", "system-ui", "sans-serif"],
-        mono:    ['"JetBrains Mono"', "ui-monospace", "Menlo", "Consolas", "monospace"]
+        display: ['"Fraunces"', "Georgia", "serif"],
+        body:    ['"Fraunces"', "Georgia", "serif"],
+        mono:    ['"DM Mono"', "ui-monospace", "Menlo", "Consolas", "monospace"]
       },
       letterSpacing: {
-        wider2: "0.18em",
-        widest2: "0.28em"
+        small: "0.16em",
+        smallcaps: "0.22em"
       }
     }
   },

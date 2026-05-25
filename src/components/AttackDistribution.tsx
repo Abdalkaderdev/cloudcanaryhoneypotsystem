@@ -8,33 +8,31 @@ export function AttackDistribution({ distribution }: { distribution: Record<stri
   const max = entries[0]?.[1] || 1;
 
   return (
-    <Frame index="002" title="ATTACK DISTRIBUTION" meta={`Σ ${total} events / 24h`}>
-      {entries.length === 0 ? (
-        <p className="text-xs tracking-widest2 text-inkMid">// NO SIGNAL</p>
-      ) : (
-        <ul className="space-y-2.5">
+    <Frame
+      kicker="Section 02"
+      title="By classification"
+      byline={total === 0 ? "No traffic observed yet." : `${total} events grouped by detection rule, last 24h.`}
+    >
+      {entries.length === 0 ? null : (
+        <ul className="space-y-3.5">
           {entries.map(([key, value]) => {
             const pct = total ? (value / total) * 100 : 0;
             const w = (value / max) * 100;
             return (
               <li key={key}>
-                <div className="flex items-baseline justify-between text-[11px] tracking-widest2">
-                  <span className="text-ink uppercase">{attackTypeLabel(key)}</span>
-                  <span className="text-inkMid tabular-nums">
-                    {String(value).padStart(3, "0")} · {pct.toFixed(0).padStart(2, "0")}%
+                <div className="flex items-baseline justify-between gap-3">
+                  <span className="font-display text-[16px] text-ink" style={{ fontWeight: 500 }}>
+                    {attackTypeLabel(key)}
+                  </span>
+                  <span className="font-mono text-[12px] text-ink2 lining-nums">
+                    {value.toLocaleString()} · {pct.toFixed(0)}%
                   </span>
                 </div>
-                <div className="mt-1.5 relative h-2 bg-bg border border-border">
+                <div className="mt-1.5 relative h-[3px] bg-paper3">
                   <div
                     className="absolute inset-y-0 left-0"
                     style={{ width: `${w}%`, background: attackTypeColor(key) }}
                   />
-                  {/* tick marks */}
-                  <div className="absolute inset-0 grid grid-cols-10 pointer-events-none">
-                    {Array.from({ length: 10 }).map((_, i) => (
-                      <div key={i} className="border-r border-borderHi/30 last:border-r-0" />
-                    ))}
-                  </div>
                 </div>
               </li>
             );

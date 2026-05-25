@@ -1,31 +1,34 @@
 import { cn } from "@/lib/utils";
 
 export function Frame({
-  index, title, meta, children, className, dense
+  title, kicker, byline, children, className
 }: {
-  index?: string; title?: string; meta?: string;
-  children: React.ReactNode; className?: string; dense?: boolean;
+  title?: string;
+  kicker?: string;
+  byline?: string;
+  children: React.ReactNode;
+  className?: string;
 }) {
   return (
-    <section className={cn("hardframe", className)}>
-      {(index || title || meta) && (
-        <header className="flex items-baseline justify-between gap-4 border-b border-border px-4 py-2.5">
-          <h2 className="section-bar text-[11px] sm:text-[12px] flex items-baseline gap-3">
-            {index && <span className="index">[{index}]</span>}
-            <span>{title}</span>
-          </h2>
-          {meta && <span className="meta text-[10px] sm:text-[11px] hidden sm:inline">{meta}</span>}
+    <section className={cn("relative", className)}>
+      {(kicker || title) && (
+        <header className="mb-4">
+          {kicker && <div className="smallcaps mb-1">{kicker}</div>}
+          {title && (
+            <h2 className="font-display text-[28px] sm:text-[32px] font-700 text-ink leading-[1.05]" style={{ fontWeight: 700 }}>
+              {title}
+            </h2>
+          )}
+          {byline && <p className="byline mt-1">{byline}</p>}
+          <div className="hr-soft mt-3" />
         </header>
       )}
-      <div className={dense ? "p-3" : "p-4 sm:p-5"}>{children}</div>
+      {children}
     </section>
   );
 }
 
-export function Rule() {
-  return (
-    <div className="frame-rule" aria-hidden>
-      {"─".repeat(180)}
-    </div>
-  );
+export function Rule({ kind = "soft" }: { kind?: "soft" | "strong" | "thick" }) {
+  const c = kind === "thick" ? "hr-thick" : kind === "strong" ? "hr-strong" : "hr-soft";
+  return <div className={c} />;
 }

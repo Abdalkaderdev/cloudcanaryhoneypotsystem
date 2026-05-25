@@ -30,57 +30,61 @@ export function LiveLogs({ logs }: { logs: Log[] }) {
   }, [logs, seen]);
 
   return (
-    <Frame index="004" title="LIVE EVENT FEED" meta={`tail -f · ${logs.length} rows · refresh 6s`}>
+    <Frame
+      kicker="Section 04 · The wire"
+      title="From the dispatches"
+      byline={`The ${logs.length} most recent interactions captured by the honeypot, newest first.`}
+    >
       {logs.length === 0 ? (
-        <div className="text-[11px] tracking-widest2 text-inkMid">
-          <span className="blink">█</span> AWAITING INCOMING TRAFFIC
-        </div>
+        <p className="font-display italic text-ink3 text-lg">— The wire is quiet —</p>
       ) : (
-        <div className="overflow-x-auto -mx-1">
-          <table className="w-full text-left font-mono">
-            <thead>
-              <tr className="text-[9px] tracking-widest2 text-inkMid border-b border-border">
-                <th className="py-2 pl-1 pr-3 font-normal w-12">REC</th>
-                <th className="py-2 pr-3 font-normal w-20">T</th>
-                <th className="py-2 pr-3 font-normal">IP</th>
-                <th className="py-2 pr-3 font-normal w-14">METHOD</th>
-                <th className="py-2 pr-3 font-normal">ENDPOINT</th>
-                <th className="py-2 pr-3 font-normal">CLASS</th>
-                <th className="py-2 pr-3 font-normal">PAYLOAD</th>
+        <table className="w-full text-left border-collapse">
+          <thead>
+            <tr className="text-[10px] text-ink2 border-b border-rule">
+              <th className="py-2 pr-3 font-normal smallcaps">When</th>
+              <th className="py-2 pr-3 font-normal smallcaps">Source</th>
+              <th className="py-2 pr-3 font-normal smallcaps">Method</th>
+              <th className="py-2 pr-3 font-normal smallcaps">Endpoint</th>
+              <th className="py-2 pr-3 font-normal smallcaps">Class</th>
+              <th className="py-2 pr-3 font-normal smallcaps">Payload</th>
+            </tr>
+          </thead>
+          <tbody>
+            {logs.map((l) => (
+              <tr
+                key={l.id}
+                className={`border-b border-rule/60 last:border-0 ${newest.current.has(l.id) ? "sweep" : ""}`}
+              >
+                <td className="py-2.5 pr-3 align-top whitespace-nowrap">
+                  <span className="font-mono text-[12px] text-ink2 lining-nums">{timeAgo(l.timestamp)}</span>
+                </td>
+                <td className="py-2.5 pr-3 align-top">
+                  <span className="font-mono text-[12px] text-ink lining-nums">{l.ip}</span>
+                  {l.country && <span className="ml-2 italic text-[12px] text-ink3">{l.country}</span>}
+                </td>
+                <td className="py-2.5 pr-3 align-top">
+                  <span className="font-mono text-[12px] text-ink2">{l.method}</span>
+                </td>
+                <td className="py-2.5 pr-3 align-top">
+                  <span className="font-mono text-[12px] text-teal truncate max-w-[220px] inline-block">{l.endpoint}</span>
+                </td>
+                <td className="py-2.5 pr-3 align-top">
+                  <span
+                    className="font-display italic text-[13px]"
+                    style={{ color: attackTypeColor(l.attack_type), fontWeight: 700 }}
+                  >
+                    {attackTypeLabel(l.attack_type)}
+                  </span>
+                </td>
+                <td className="py-2.5 pr-3 align-top">
+                  <span className="font-mono text-[12px] text-ink2 truncate max-w-[300px] inline-block">
+                    {l.payload_snippet || "—"}
+                  </span>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {logs.map((l, i) => (
-                <tr
-                  key={l.id}
-                  className={`border-b border-border/40 last:border-0 hover:bg-panel2 ${newest.current.has(l.id) ? "sweep" : ""}`}
-                >
-                  <td className="py-2 pl-1 pr-3 text-[10px] text-inkMid tabular-nums">
-                    {String(logs.length - i).padStart(4, "0")}
-                  </td>
-                  <td className="py-2 pr-3 text-[11px] text-inkMid whitespace-nowrap">{timeAgo(l.timestamp)}</td>
-                  <td className="py-2 pr-3 text-[11px]">
-                    <span className="text-ink">{l.ip}</span>
-                    {l.country_code && <span className="ml-2 text-inkMid">[{l.country_code}]</span>}
-                  </td>
-                  <td className="py-2 pr-3 text-[11px] text-amber">{l.method}</td>
-                  <td className="py-2 pr-3 text-[11px] text-amberDim truncate max-w-[220px]">{l.endpoint}</td>
-                  <td className="py-2 pr-3 text-[11px]">
-                    <span
-                      className="inline-block border px-1.5 py-0.5 tracking-widest2 uppercase text-[10px]"
-                      style={{ borderColor: attackTypeColor(l.attack_type), color: attackTypeColor(l.attack_type) }}
-                    >
-                      {attackTypeLabel(l.attack_type)}
-                    </span>
-                  </td>
-                  <td className="py-2 pr-3 text-[11px] text-inkMid truncate max-w-[280px]">
-                    {l.payload_snippet ? `›  ${l.payload_snippet}` : "—"}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+            ))}
+          </tbody>
+        </table>
       )}
     </Frame>
   );
