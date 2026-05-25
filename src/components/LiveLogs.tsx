@@ -31,17 +31,17 @@ export function LiveLogs({ logs }: { logs: Log[] }) {
 
   return (
     <Frame
-      kicker="No. IV · From the wire"
+      kicker="No. VII · From the wire"
       title="Dispatches, in order of arrival"
-      byline={`The most recent ${logs.length} interactions captured by the honeypot. Newest first.`}
+      byline={`The ${logs.length} most recent interactions captured by the honeypot.`}
     >
       {logs.length === 0 ? (
-        <p className="font-display italic text-ink3 text-[20px]">— The wire stands silent —</p>
+        <p className="font-display italic text-ink3 text-[18px]">— The wire stands silent —</p>
       ) : (
         <div className="overflow-x-auto -mx-2">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="text-[10px] text-ink2 border-b border-rule">
+              <tr className="border-b border-rule">
                 <th className="py-2 px-2 font-normal smallcaps">When</th>
                 <th className="py-2 px-2 font-normal smallcaps">Source</th>
                 <th className="py-2 px-2 font-normal smallcaps">Method</th>
@@ -56,28 +56,28 @@ export function LiveLogs({ logs }: { logs: Log[] }) {
                   key={l.id}
                   className={`border-b border-rule/60 last:border-0 ${newest.current.has(l.id) ? "sweep" : ""}`}
                 >
-                  <td className="py-3 px-2 align-top whitespace-nowrap">
+                  <td className="py-2.5 px-2 align-top whitespace-nowrap">
                     <span className="font-mono text-[11px] text-ink2 lining-nums">{timeAgo(l.timestamp)}</span>
                   </td>
-                  <td className="py-3 px-2 align-top">
+                  <td className="py-2.5 px-2 align-top">
                     <div className="font-mono text-[12px] text-ink lining-nums">{l.ip}</div>
-                    {l.country && <div className="byline" style={{ fontSize: "12px" }}>{l.country}</div>}
+                    {l.country && <div className="byline" style={{ fontSize: "11px" }}>{l.country}</div>}
                   </td>
-                  <td className="py-3 px-2 align-top">
+                  <td className="py-2.5 px-2 align-top">
                     <span className="font-mono text-[11px] text-ink2">{l.method}</span>
                   </td>
-                  <td className="py-3 px-2 align-top">
+                  <td className="py-2.5 px-2 align-top">
                     <span className="font-mono text-[11px] text-slate truncate max-w-[200px] inline-block">{l.endpoint}</span>
                   </td>
-                  <td className="py-3 px-2 align-top">
+                  <td className="py-2.5 px-2 align-top">
                     <span
                       className="font-display italic"
-                      style={{ color: attackTypeColor(l.attack_type), fontWeight: 700, fontSize: "14px" }}
+                      style={{ color: attackTypeColor(l.attack_type), fontWeight: 700, fontSize: "13px" }}
                     >
                       {attackTypeLabel(l.attack_type)}
                     </span>
                   </td>
-                  <td className="py-3 px-2 align-top">
+                  <td className="py-2.5 px-2 align-top">
                     <span className="font-mono text-[11px] text-ink2 truncate max-w-[280px] inline-block">
                       {l.payload_snippet || "—"}
                     </span>

@@ -7,7 +7,7 @@ import { AttackTimeline } from "./AttackTimeline";
 import { LiveLogs } from "./LiveLogs";
 import { Infrastructure } from "./Infrastructure";
 import { TopAttackers } from "./TopAttackers";
-import { Ornament, Rule } from "./Frame";
+import { Rule } from "./Frame";
 
 type Stats = {
   system_status: "active" | "degraded" | "down";
@@ -55,8 +55,8 @@ export function Dashboard() {
     return (
       <div className="min-h-dvh">
         <Header status="degraded" />
-        <main className="mx-auto max-w-5xl px-6 py-10">
-          <p className="font-display italic text-ink3 text-[24px]">Establishing connection to the wire…</p>
+        <main className="mx-auto max-w-6xl px-6 py-10">
+          <p className="font-display italic text-ink3 text-[20px]">Establishing connection to the wire…</p>
         </main>
       </div>
     );
@@ -66,44 +66,11 @@ export function Dashboard() {
     <div className="min-h-dvh">
       <Header status={stats.system_status} />
 
-      <main className="mx-auto max-w-5xl px-6 py-12 sm:py-16">
+      <main className="mx-auto max-w-6xl px-6 py-8 space-y-6">
         {stats.warning && <Notice tone="warn">{stats.warning}</Notice>}
         {err && <Notice tone="error">Connection issue: {err}</Notice>}
 
-        {/* Lead spread */}
-        <section className="grid grid-cols-1 lg:grid-cols-12 gap-x-12 gap-y-8 mb-12">
-          <div className="lg:col-span-8">
-            <div className="smallcaps mb-3">No. I — Lead</div>
-            <h2
-              className="font-display text-ink leading-[0.96]"
-              style={{ fontSize: "clamp(40px, 6vw, 64px)", fontWeight: 700, letterSpacing: "-0.015em", fontVariationSettings: "'opsz' 72" }}
-            >
-              <span className="italic" style={{ fontWeight: 400 }}>{stats.total_attacks.toLocaleString()}</span> events,
-              from <span className="italic" style={{ fontWeight: 400 }}>{stats.unique_ips.toLocaleString()}</span> sources,
-              in the past twenty-four hours.
-            </h2>
-            <p className="dropcap mt-8 text-ink2" style={{ fontSize: "18px", lineHeight: 1.55 }}>
-              The Cloud Canary honeypot has continued to draw opportunistic traffic from across the public Internet.
-              In the most recent hour, <strong className="text-ink" style={{ fontWeight: 600 }}>{stats.last_hour_attacks.toLocaleString()}</strong> interactions
-              were recorded across <strong className="text-ink" style={{ fontWeight: 600 }}>{stats.monitored_endpoints}</strong> decoy endpoints —
-              a routine cadence, with no anomalous spike of note. Full distribution and provenance are reported below;
-              all timestamps are coordinated universal time.
-            </p>
-          </div>
-
-          <aside className="lg:col-span-4 lg:border-l border-rule lg:pl-12">
-            <div className="smallcaps mb-5">At a glance</div>
-            <dl className="space-y-4">
-              <Stat label="Total events" value={stats.total_attacks.toLocaleString()} />
-              <Stat label="Unique sources" value={stats.unique_ips.toLocaleString()} />
-              <Stat label="Last hour" value={stats.last_hour_attacks.toLocaleString()} />
-              <Stat label="Decoys watched" value={stats.monitored_endpoints.toLocaleString()} />
-            </dl>
-          </aside>
-        </section>
-
-        <Ornament />
-
+        {/* The four key tiles */}
         <StatusCards
           totalAttacks={stats.total_attacks}
           monitoredEndpoints={stats.monitored_endpoints}
@@ -111,30 +78,27 @@ export function Dashboard() {
           lastHourAttacks={stats.last_hour_attacks}
         />
 
-        <Ornament />
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-12 gap-y-12">
+        {/* Distribution + Timeline */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <div className="lg:col-span-5"><AttackDistribution distribution={stats.distribution} /></div>
           <div className="lg:col-span-7"><AttackTimeline data={stats.timeline_24h} /></div>
         </div>
 
-        <Ornament />
-
+        {/* Live feed */}
         <LiveLogs logs={logs} />
 
-        <Ornament />
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-12">
+        {/* Infra + Top attackers */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <Infrastructure items={stats.infrastructure} />
           <TopAttackers items={stats.top_attackers} />
         </div>
 
-        <div className="mt-16">
+        <div className="pt-2">
           <Rule kind="strong" />
-          <footer className="grid grid-cols-3 gap-4 py-6 text-[10px] text-ink3 items-center">
+          <footer className="grid grid-cols-3 gap-4 py-5 text-[10px] text-ink3 items-center">
             <span className="smallcaps">— Finis —</span>
             <span className="text-center smallcaps">Cloud Canary · Watch I</span>
-            <span className="text-right byline italic" style={{ fontSize: "12px" }}>this page refreshes every {REFRESH_MS / 1000} seconds</span>
+            <span className="text-right byline italic" style={{ fontSize: "12px" }}>refreshed every {REFRESH_MS / 1000} seconds</span>
           </footer>
         </div>
       </main>
@@ -142,24 +106,11 @@ export function Dashboard() {
   );
 }
 
-function Stat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-baseline justify-between gap-3 border-b border-rule/60 pb-3">
-      <dt className="smallcaps">{label}</dt>
-      <dd
-        className="font-display text-ink lining-nums"
-        style={{ fontSize: "26px", fontWeight: 500, letterSpacing: "-0.015em" }}
-      >
-        {value}
-      </dd>
-    </div>
-  );
-}
-
 function Notice({ children, tone }: { children: React.ReactNode; tone: "warn" | "error" }) {
-  const color = tone === "error" ? "text-burgundy border-burgundy" : "text-gold border-gold";
+  const ring = tone === "error" ? "border-burgundy" : "border-gold";
+  const text = tone === "error" ? "text-burgundy" : "text-gold";
   return (
-    <div className={`border-l-2 ${color} pl-5 py-2 italic font-display mb-8`} style={{ fontSize: "16px" }}>
+    <div className={`bg-paper2/70 border ${ring} border-l-[3px] px-5 py-3 font-display italic ${text}`} style={{ fontSize: "15px" }}>
       {children}
     </div>
   );
