@@ -23,7 +23,7 @@ type Stats = {
 };
 type LogRow = Parameters<typeof LiveLogs>[0]["logs"][number];
 
-const REFRESH_MS = 20000;
+const REFRESH_MS = 30000;
 
 export function Dashboard() {
   const [stats, setStats] = useState<Stats | null>(null);

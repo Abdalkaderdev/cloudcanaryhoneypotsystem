@@ -11,7 +11,7 @@ from _lib.firestore_client import ATTACKS_COLLECTION, get_db
 
 app = Flask(__name__)
 
-CACHE_TTL = 15.0
+CACHE_TTL = 300.0  # 5 minutes
 _cache: dict = {"at": 0.0, "limit": 0, "data": None}
 
 

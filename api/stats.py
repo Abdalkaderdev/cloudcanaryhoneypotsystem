@@ -13,8 +13,8 @@ from _lib.firestore_client import ATTACKS_COLLECTION, get_db
 app = Flask(__name__)
 
 MONITORED_ENDPOINTS = ["/decoy/login", "/decoy/admin", "/decoy/api"]
-MAX_DOCS_PER_REFRESH = 500
-CACHE_TTL = 15.0  # seconds — multiple browser polls reuse this result
+MAX_DOCS_PER_REFRESH = 100
+CACHE_TTL = 300.0  # 5 minutes — keeps us well under Firestore free-tier reads/day
 
 _cache: dict = {"at": 0.0, "data": None}
 
