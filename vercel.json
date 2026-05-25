@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "framework": "nextjs",
+  "functions": {
+    "api/**/*.py": {
+      "runtime": "@vercel/python@4.3.1",
+      "maxDuration": 10,
+      "includeFiles": "api/_lib/**"
+    }
+  },
+  "rewrites": [
+    { "source": "/decoy",            "destination": "/api/decoy_index" },
+    { "source": "/decoy/login",      "destination": "/api/decoy_login" },
+    { "source": "/decoy/admin",      "destination": "/api/decoy_admin" },
+    { "source": "/decoy/api",        "destination": "/api/decoy_api"   },
+    { "source": "/decoy/api/:path*", "destination": "/api/decoy_api/:path*" }
+  ]
+}
